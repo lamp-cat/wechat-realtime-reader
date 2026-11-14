@@ -1,4 +1,4 @@
-# wechat-connecter-read-only
+# wechat-realtime-reader
 
 一个可复用的 **Grok Bot / agent skill**:在 macOS 上**只读、只收**地读取本机微信(4.x)的本地消息数据库(会话、消息、联系人、群、图片),供任意 agent 查询或做下游处理。
 
