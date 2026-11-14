@@ -1,0 +1,5 @@
+{
+  "wxid": "<WXID>",
+  "db_base_path": "~/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files/<WXID>/db_storage",
+  "vault_dir": "~/.local/share/wechat-realtime-reader"
+}
