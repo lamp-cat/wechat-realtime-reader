@@ -27,7 +27,9 @@ cd wechat-realtime-reader
    - 前台:`./scripts/serve.sh`(默认 `127.0.0.1:5678`)
    - 或再次运行 `./scripts/setup.sh`,在已有密钥的情况下会通过 launchd 保活
 
-启动后终端会打印带令牌的本机地址,用浏览器打开即可。令牌也可用 `reader/bin/wechat-reader token` 查看,保存在数据目录的 `state/web-token`(0600)。**令牌 = 完整读权限,请当机密对待,不要分享、不要提交到 Git。**
+启动后终端会打印本机地址(不含令牌)。令牌请用 `reader/bin/wechat-reader token` 查看,保存在数据目录的 `state/web-token`(0600)。**令牌 = 完整读权限,请当机密对待,不要分享、不要提交到 Git,也不要写进世界可读的配置文件。**
+
+`wechat-reader detect [-write]` 可自动查找本机微信 4.x 账号目录并写入 `source-config.json`。`wechat-reader mcp` 以 stdio 提供只读 MCP,供 Codex / Claude / Cursor / VS Code 等工具接入(配置里只写命令路径,不含令牌)。
 
 ## 常用命令
 

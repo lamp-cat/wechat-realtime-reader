@@ -45,28 +45,19 @@ mkdir -p "$CFG" "$VAULT"
 chmod 700 "$CFG" "$VAULT"
 
 if [[ ! -f "$CFG/source-config.json" ]]; then
-  tmpl="$REPO/config/source-config.json.template"
-  wxid=""
-  count=0
-  if [[ -d "$WECHAT_FILES" ]]; then
-    for d in "$WECHAT_FILES"/wxid_*; do
-      [[ -d "$d" ]] || continue
-      count=$((count + 1))
-      wxid="$(basename "$d")"
-    done
-  fi
-  if [[ "$count" -eq 1 && -n "$wxid" ]]; then
-    # wxid 只含字母数字下划线,直接替换占位符
-    sed "s/<WXID>/$wxid/g" "$tmpl" > "$CFG/source-config.json"
-    echo "   检测到唯一的本机微信账号目录,已填入 wxid=$wxid"
-  else
-    cp "$tmpl" "$CFG/source-config.json"
-    echo "   已放置数据源模板,请编辑 $CFG/source-config.json,把 <WXID> 改成你的真实微信 id"
-    if [[ -d "$WECHAT_FILES" ]]; then
-      echo "   账号目录一般在: $WECHAT_FILES/"
+  if "$BIN" detect -write -json >/tmp/wechat-reader-detect.$$.json 2>/tmp/wechat-reader-detect.$$.err; then
+    chosen="$(python3 -c "import json;print(json.load(open('/tmp/wechat-reader-detect.$$.json')).get('chosen') or '')" 2>/dev/null || true)"
+    if [[ -n "$chosen" ]]; then
+      echo "   已自动绑定本机微信账号目录: $chosen"
+    else
+      echo "   未找到账号目录(请先登录微信一次);已放置模板,见 $CFG/source-config.json"
     fi
+  else
+    cp "$REPO/config/source-config.json.template" "$CFG/source-config.json"
+    chmod 600 "$CFG/source-config.json"
+    echo "   自动检测失败,已放置模板,请编辑 $CFG/source-config.json"
   fi
-  chmod 600 "$CFG/source-config.json"
+  rm -f /tmp/wechat-reader-detect.$$.json /tmp/wechat-reader-detect.$$.err
 else
   echo "   已保留现有 $CFG/source-config.json"
 fi
