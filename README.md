@@ -21,7 +21,7 @@ cd wechat-realtime-reader
 然后完成一次性手工步骤:
 
 1. **确认数据源**:打开 `~/.config/wechat-realtime-reader/source-config.json`,把 `<WXID>` 改成你的微信 id(账号目录一般在 `~/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files/`)。若安装时已自动填入,核对即可。
-2. **抓密钥**(首次,或微信大版本更新导致无法解密时):登录并保持微信在线,运行 `./scripts/recapture-keys.sh`。脚本会对微信做一份**签名的临时副本**,用 Frida hook CommonCrypto PBKDF,把各库密钥写入 `~/.config/wechat-realtime-reader/keys.json`(权限 0600)。**不改官方微信、不关 SIP,也不会在终端打印密钥。** 出现微信安全提示时立即停止,不要反复重试。
+2. **抓密钥**(首次,或微信大版本更新导致无法解密时):登录并保持微信在线,运行 `./scripts/recapture-keys.sh`。脚本会对微信做一份**签名的临时副本**,用 Frida（官方 `frida-inject`，固定 17.25.2、校验 sha256，`setup.sh` 会预先下载；不走 pip）hook CommonCrypto PBKDF,把各库密钥写入 `~/.config/wechat-realtime-reader/keys.json`(权限 0600)。**不改官方微信、不关 SIP,也不会在终端打印密钥。** 出现微信安全提示时立即停止,不要反复重试。
 3. **完全磁盘访问权限**:系统设置 → 隐私与安全性 → 完全磁盘访问权限,加入 `reader/bin/wechat-reader`(或你实际运行的那个二进制),否则读不到本地库。
 4. **启动服务**:
    - 前台:`./scripts/serve.sh`(默认 `127.0.0.1:5678`)
@@ -87,3 +87,6 @@ cd reader && go build -o bin/wechat-reader ./cmd/wechat-reader
 ## 许可
 
 本仓库中由 lamp-cat 编写的 skill、脚本、模板与说明以 MIT 许可发布(见 `LICENSE`)。`reader/` 目录中的读取器源码来自 [missuo/wechat-realtime-reader](https://github.com/missuo/wechat-realtime-reader),按原样收录,版权归原作者。
+
+## 第三方组件
+- [Frida](https://frida.re)（`frida-inject` 17.25.2，wxWindows Library Licence 3.1）：只用于抓密钥时挂接临时微信副本。二进制不放进仓库，由 `reader/skills/wechat-db-keys/vendor/frida/fetch.py` 从官方 GitHub Release 下载并校验 sha256；来源与许可证见该目录。

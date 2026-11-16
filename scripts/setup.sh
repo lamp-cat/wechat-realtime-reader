@@ -62,6 +62,15 @@ else
   echo "   已保留现有 $CFG/source-config.json"
 fi
 
+echo "==> 预取 Frida(抓密钥用;官方 frida-inject 17.25.2,校验 sha256,不走 pip)"
+FETCH="$READER/skills/wechat-db-keys/vendor/frida/fetch.py"
+if [[ -f "$FETCH" ]] && /usr/bin/env python3 "$FETCH" >/dev/null 2>&1; then
+  echo "   Frida 已就绪(离线可用)"
+else
+  echo "   暂时无法下载(不影响读取),抓密钥时会再试;也可把官方 .xz 放到本地后运行:"
+  echo "     python3 \"$FETCH\" --from <目录>"
+fi
+
 echo "==> 渲染 launchd 配置"
 mkdir -p "$HOME/Library/LaunchAgents"
 log="$CFG/serve.log"
